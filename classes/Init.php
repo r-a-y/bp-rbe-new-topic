@@ -14,8 +14,7 @@ abstract class Init {
 	 * @since 0.1
 	 */
 	public static function init() {
-		$class = get_called_class();
-		return new $class();
+		return new static();
 	}
 
 	/**
