@@ -2,6 +2,7 @@
 
 namespace BP_RBE_New_Topic;
 
+use BP_RBE_New_Topic\Init;
 use BP_RBE_New_Topic\Get;
 use BP_Groups_Group;
 
