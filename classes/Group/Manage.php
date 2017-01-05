@@ -42,16 +42,25 @@ class Manage extends Init {
 	width: 3.3em !important;
 	opacity: 1;
 	border-right: 0;
+	border-top-right-radius: 0;
+	border-bottom-right-radius: 0;
 	padding-right: 0;
 }
 #buddypress #mailbox {
 	border-left: 0;
+	border-top-left-radius: 0;
+	border-bottom-right-radius: 0;
 	padding-left: 0;
 	width: auto !important;
 }
 #buddypress .new-topic-save {
 	clear: both;
 	margin: 1.5em 0 3em;
+}
+#buddypress #new-topic:after {
+	clear: both;
+	content: "";
+	display: table;
 }
 EOD;
 
