@@ -50,10 +50,20 @@ class Frontend extends Init {
 	 */
 	public function alter_email_address( $retval ) {
 		if ( bp_rbe_is_inbound() ) {
-			return str_replace( '-new', '', $retval );
+			$retval = str_replace( '-new', '', $retval );
 		} else {
-			return Get::mailbox_prefix() . Get::mailbox() . '@' . bp_rbe_get_setting( 'inbound-domain' );
+			$retval = Get::mailbox_prefix() . Get::mailbox() . '@' . bp_rbe_get_setting( 'inbound-domain' );
 		}
+
+		/**
+		 * Filters the new topic email address for the displayed group.
+		 *
+		 * Handy if you wanted to use a separate inbound domain for new group topics.
+		 *
+		 * @param  string $retval Current new topic email address.
+		 * @return string
+		 */
+		return apply_filters( 'bp_rbe_group_email_address', $retval );
 	}
 
 	public function inline_css() {
