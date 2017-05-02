@@ -33,8 +33,17 @@ class Parser extends Init {
 	 * @return bool
 	 */
 	public function alter_new_item_check( $retval, $qs ) {
-		if ( 0 === strpos( $qs, Get::mailbox_prefix() ) ) {
+		$prefix = Get::mailbox_prefix();
+		if ( ! empty( $prefix ) && 0 === strpos( $qs, Get::mailbox_prefix() ) ) {
 			$retval = true;
+		}
+
+		// Using an empty prefix so check if group slug exists.
+		if ( empty( $prefix ) ) {
+			// Group exists, so set new itme check to true.
+			if ( $this->set_new_topic_querystring( $qs ) !== $qs ) {
+				$retval = true;
+			}
 		}
 
 		return $retval;
@@ -58,9 +67,19 @@ class Parser extends Init {
 			return $retval;
 		}
 
-		if ( 0 !== strpos( $address, Get::mailbox_prefix() ) ) {
+		$prefix = Get::mailbox_prefix();
+
+		// Prefix exists, so check if querystring has it. If not, bail.
+		if ( ! empty( $prefix ) && 0 !== strpos( $address, Get::mailbox_prefix() ) ) {
 			return $retval;
-		}			
+
+		// No prefix, so verify group slug. If group slug doesn't exist, bail.
+		} elseif ( empty( $prefix ) ) {
+			$slug = substr( $address, 0, strpos( $address, '@' ) );
+			if ( $this->set_new_topic_querystring( $slug ) === $slug ) {
+				return $retval;
+			}
+		}
 
 		return substr( $address, 0, strpos( $address, '@' ) );
 	}
