@@ -38,7 +38,8 @@ class Manage extends Init {
 #new-topic label {
 	line-height: 2.5;
 }
-#buddypress #new-topic .prefix {
+#buddypress #new-topic .prefix,
+#content #new-topic .prefix {
 	width: 3.3em !important;
 	opacity: 1;
 	border-right: 0;
@@ -46,18 +47,24 @@ class Manage extends Init {
 	border-bottom-right-radius: 0;
 	padding-right: 0;
 }
-#buddypress #mailbox {
+#buddypress #mailbox,
+#content #mailbox {
+	width: auto !important;
+}
+#buddypress .prefix + .mailbox-with-prefix,
+#content .prefix + .mailbox-with-prefix {
 	border-left: 0;
 	border-top-left-radius: 0;
 	border-bottom-right-radius: 0;
 	padding-left: 0;
-	width: auto !important;
 }
-#buddypress .new-topic-save {
+#buddypress .new-topic-save,
+#content .new-topic-save {
 	clear: both;
 	margin: 1.5em 0 3em;
 }
-#buddypress #new-topic:after {
+#buddypress #new-topic:after,
+#content #new-topic:after {
 	clear: both;
 	content: "";
 	display: table;
@@ -132,6 +139,8 @@ EOD;
 	 * @since 0.1
 	 */
 	public function content() {
+		$prefix = Get::mailbox_prefix();
+		$mailbox_class = ! empty( $prefix ) ? ' class="mailbox-with-prefix"' : '';
 	?>
 
 		<div id="new-topic">
@@ -139,8 +148,11 @@ EOD;
 
 			<?php $this->description(); ?>
 
-			<input class="prefix" name="mailbox-prefix" type="text" value="<?php esc_attr_e( Get::mailbox_prefix() ); ?>" readonly="readonly" onclick="document.getElementById('mailbox').select(); return false;" />
-			<input id="mailbox" name="mailbox" type="text" value="<?php esc_attr_e( Get::mailbox() ); ?>" placeholder="<?php esc_attr_e( Get::mailbox() ); ?>" onclick="this.select()" />
+			<?php if ( ! empty( $prefix ) ) : ?>
+				<input class="prefix" name="mailbox-prefix" type="text" value="<?php esc_attr_e( Get::mailbox_prefix() ); ?>" readonly="readonly" onclick="document.getElementById('mailbox').select(); return false;" />
+			<?php endif; ?>
+
+			<input id="mailbox" name="mailbox" type="text" value="<?php esc_attr_e( Get::mailbox() ); ?>" placeholder="<?php esc_attr_e( Get::mailbox() ); ?>" onclick="this.select()"<?php echo $mailbox_class; ?>/>
 			<label for="mailbox">@<?php echo bp_rbe_get_setting( 'inbound-domain' ); ?></label>
 
 			<?php wp_nonce_field( 'bp-group-new-topic-slug-save', 'new_topic_save' ); ?>
