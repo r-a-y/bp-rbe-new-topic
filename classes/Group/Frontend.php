@@ -17,6 +17,19 @@ class Frontend extends Init {
 	 * @since 0.1
 	 */
 	protected function hooks() {
+		/**
+		 * Filter to display the new group email address on the frontend.
+		 *
+		 * @since 0.1
+		 *
+		 * @param  bool $retval Defaults to true.
+		 * @return bool
+		 */
+		$enable = apply_filters( 'bp_rbe_enable_frontend_group_email_address', true );
+		if ( true !== $enable ) {
+			return;
+		}
+
 		add_filter( 'bp_rbe_encode_group_querystring', array( $this, 'use_group_mailbox' ), 30, 3 );
 		add_filter( 'bp_rbe_inject_qs_in_email',       array( $this, 'alter_email_address' ) );
 
