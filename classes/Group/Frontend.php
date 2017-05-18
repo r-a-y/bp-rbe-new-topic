@@ -47,6 +47,11 @@ class Frontend extends Init {
 	 * @return string
 	 */
 	public function use_group_mailbox( $retval, $user_id, $group_id ) {
+		// Sanity check!
+		if ( ! did_action( 'wp_head' ) ) {
+			return $retval;
+		}
+
 		return Get::mailbox_prefix() . Get::mailbox( $group_id );
 	}
 
@@ -62,6 +67,11 @@ class Frontend extends Init {
 	 * @return string
 	 */
 	public function alter_email_address( $retval ) {
+		// Sanity check!
+		if ( ! did_action( 'wp_head' ) ) {
+			return $retval;
+		}
+
 		if ( bp_rbe_is_inbound() ) {
 			$retval = str_replace( '-new', '', $retval );
 		} else {
