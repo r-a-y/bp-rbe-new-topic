@@ -83,6 +83,9 @@ function bp_rbe_new_topic_loader() {
 	} );
 
 	// Parser integration.
-	add_action( 'bp_rbe_before_parser', 'BP_RBE_New_Topic\Parser::init' );	
+	add_filter( 'bp_rbe_get_querystring', function( $retval ) {
+		\BP_RBE_New_Topic\Parser::init();
+		return $retval;
+	}, 0 );
 }
 add_action( 'bp_include', 'bp_rbe_new_topic_loader', 20 );
