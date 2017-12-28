@@ -45,7 +45,7 @@ function bp_rbe_new_topic_loader() {
 	 * If using IMAP mode, manually load Inbound mode.
 	 *
 	 * This is so our custom, simple group new topic email addresses will work.
-	 */ 
+	 */
 	if ( ! bp_rbe_is_inbound() ) {
 		$GLOBALS['bp_rbe']->load_inbound_provider();
 		add_action( 'wp_loaded', 'bp_rbe_inbound_catch_callback', 0 );
