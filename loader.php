@@ -55,6 +55,10 @@ function bp_rbe_new_topic_loader() {
 	spl_autoload_register( function( $class ) {
 		$prefix = 'BP_RBE_New_Topic\\';
 
+		if ( 0 !== strpos( $class, $prefix ) ) {
+			return;
+		}
+
 		// Get the relative class name.
 		$relative_class = substr( $class, strlen( $prefix ) );
 
