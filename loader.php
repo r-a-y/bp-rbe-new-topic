@@ -73,7 +73,8 @@ function bp_rbe_new_topic_loader() {
 
 	// Group integration.
 	add_action( 'bp_init', function() {
-		if ( bp_is_group() && bp_is_current_action( 'forum' ) && ! bp_action_variable() && ! bp_is_post_request() && is_user_logged_in() ) {
+		if ( bp_is_group() && bp_is_current_action( 'forum' ) && ! bp_is_post_request() && is_user_logged_in() &&
+			( ! bp_action_variable() || bp_is_action_variable( 'edit', 2 ) ) ) {
 			BP_RBE_New_Topic\Group\Frontend::init();
 		}
 
