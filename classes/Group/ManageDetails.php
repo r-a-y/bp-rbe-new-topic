@@ -7,31 +7,33 @@ use BP_RBE_New_Topic\Get;
 use BP_Groups_Group;
 
 /**
- * Group admin integration.
+ * Group admin integration into "Manage > Details" page.
  *
- * Piggybacks off of GES' "Manage > Email Options" page.
- *
- * @since 0.1
+ * @since 0.2
  */
-class Manage extends Init {
+class ManageDetails extends Init {
 	/**
 	 * Hooks.
 	 *
-	 * @since 0.1
+	 * @since 0.2
 	 */
 	protected function hooks() {
-		add_action( 'wp_head',    array( $this, 'inline_css' ) );
-		add_action( 'bp_actions', array( $this, 'validate' ), 0 );
-		add_action( 'bp_before_group_admin_content', array( $this, 'content' ), 0 );
+		add_action( 'wp_head', array( $this, 'inline_css' ) );
+		add_action( 'groups_group_details_edited', array( $this, 'validate' ), 0 );
+		add_action( 'groups_custom_group_fields_editable', array( $this, 'content' ), 0 );
+		add_action( 'template_notices', array( $this, 'notice' ), 20 );
 	}
 
 	/**
 	 * Inline CSS.
 	 *
-	 * @since 0.1
+	 * @since 0.2
 	 */
 	public function inline_css() {
 		$css = <<<EOD
+#new-topic {
+	margin-bottom: 1em;
+}
 #new-topic input {
 	float: left;
 }
@@ -69,6 +71,9 @@ class Manage extends Init {
 	content: "";
 	display: table;
 }
+#buddypress .standard-form p label {
+	margin-left: initial;
+}
 EOD;
 
 		echo "<style type=\"text/css\">{$css}</style>";
@@ -77,15 +82,9 @@ EOD;
 	/**
 	 * Validate method.
 	 *
-	 * @since 0.1
+	 * @since 0.2
 	 */
 	public function validate() {
-		if ( ! isset( $_POST['new-topic-save'] ) ) {
-			return;
-		}
-
-		check_admin_referer( 'bp-group-new-topic-slug-save', 'new_topic_save' );
-
 		$error = false;
 
 		$mailbox = sanitize_title( $_POST['mailbox'] );
@@ -114,39 +113,72 @@ EOD;
 			) );
 
 			// Mailbox already in use.
-			if ( $custom_mailbox['total'] > 0 ) {
+			if ( $custom_mailbox['total'] > 0 && Get::mailbox() !== $mailbox ) {
 				$error   = true;
 				$message = __( 'Custom group email address is already in use. Please think of another nickname.', 'bp-rbe-new-topic' );
+			} else {
+				$message = '';
 			}
 		}
 
 		// All good!
 		if ( false === $error ) {
 			groups_update_groupmeta( bp_get_current_group_id(), 'bp_rbe_new_topic_mailbox', $mailbox );
-			bp_core_add_message( __( 'New topic email address was successfully saved.', 'bp-rbe-new-topic' ) );
-
-		// Error time.
-		} else {
-			bp_core_add_message( $message, 'error' );
 		}
 
-		bp_core_redirect( bp_get_group_permalink( groups_get_current_group() ) . 'admin/notifications/' );
+		/*
+		 * Save template message into groupmeta temporarily.
+		 *
+		 * We don't want to stamp over the existing bp_core_add_message() block from
+		 * groups_screen_group_admin_edit_details().
+		 */
+		if ( ! empty( $message ) ) {
+			groups_update_groupmeta( bp_get_current_group_id(), 'bp_rbe_message', array(
+				'error'   => $error,
+				'message' => $message
+			) );
+		}
+	}
+
+	/**
+	 * Custom notice output.
+	 *
+	 * @since 0.2
+	 */
+	public function notice() {
+		$notice = groups_get_groupmeta( bp_get_current_group_id(), 'bp_rbe_message' );
+		if ( empty( $notice ) ) {
+			return;
+		}
+
+		groups_delete_groupmeta( bp_get_current_group_id(), 'bp_rbe_message' );
+
+		$type = ! empty( $notice['error'] ) ? 'error' : 'updated';
+	?>
+
+		<div id="message" class="bp-template-notice <?php echo esc_attr( $type ); ?>">
+			<p><?php echo $notice['message']; ?></p>
+		</div>
+
+	<?php
 	}
 
 	/**
 	 * Content method.
 	 *
-	 * @since 0.1
+	 * @since 0.2
 	 */
 	public function content() {
 		$prefix = Get::mailbox_prefix();
 		$mailbox_class = ! empty( $prefix ) ? ' class="mailbox-with-prefix"' : '';
+
+		$desc = $this->description();
 	?>
 
 		<div id="new-topic">
-			<h3><?php esc_html_e( 'New Topic Email Address', 'bp-rbe-new-topic' ); ?></h3>
+			<label for="mailbox"><?php esc_html_e( 'New Topic Email Address', 'bp-rbe-new-topic' ); ?></label>
 
-			<?php $this->description(); ?>
+			<?php echo $desc ? $desc : ''; ?>
 
 			<?php if ( ! empty( $prefix ) ) : ?>
 				<input class="prefix" name="mailbox-prefix" type="text" value="<?php esc_attr_e( Get::mailbox_prefix() ); ?>" readonly="readonly" onclick="document.getElementById('mailbox').select(); return false;" />
@@ -154,10 +186,6 @@ EOD;
 
 			<input id="mailbox" name="mailbox" type="text" value="<?php esc_attr_e( Get::mailbox() ); ?>" placeholder="<?php esc_attr_e( Get::mailbox() ); ?>" onclick="this.select()"<?php echo $mailbox_class; ?>/>
 			<label for="mailbox">@<?php echo bp_rbe_get_setting( 'inbound-domain' ); ?></label>
-
-			<?php wp_nonce_field( 'bp-group-new-topic-slug-save', 'new_topic_save' ); ?>
-
-			<input class="new-topic-save" name="new-topic-save" value="<?php _e( 'Save', 'bp-rbe-new-topic' ); ?>" type="submit" />
 		</div>
 
 	<?php
@@ -166,7 +194,7 @@ EOD;
 	/**
 	 * Helper method to output description in content() method.
 	 *
-	 * @since 0.1
+	 * @since 0.2
 	 */
 	public function description() {
 		/**
@@ -178,6 +206,6 @@ EOD;
 		 */
 		$desc = apply_filters( 'bp_rbe_new_topic_group_admin_desc', sprintf( '<p>%s</p>', __( 'Customize the new topic email address for your group.', 'bp-rbe-new-topic' ) ) );
 
-		echo $desc;
+		return $desc;
 	}
 }

@@ -78,8 +78,44 @@ function bp_rbe_new_topic_loader() {
 			BP_RBE_New_Topic\Group\Frontend::init();
 		}
 
+
+		if ( bp_is_group() && bp_is_current_action( 'admin' ) && bp_is_action_variable( 'edit-details', 0 ) ) {
+			/**
+			 * Whether to enable our option on a group's "Manage > Details" page.
+			 *
+			 * @since 0.2
+			 *
+			 * @param bool $show Defaults to true.
+			 */
+			$show = apply_filters( 'bp_rbe_new_topic_show_option_on_details_page', true );
+
+			if ( true === $show ) {
+				BP_RBE_New_Topic\Group\ManageDetails::init();
+			}
+		}
+
 		if ( bp_is_group() && bp_is_current_action( 'admin' ) && bp_is_action_variable( 'notifications', 0 ) ) {
-			BP_RBE_New_Topic\Group\Manage::init();
+			/**
+			 * Whether to enable our option on a group's "Manage > Email Options" page.
+			 *
+			 * This option relied on the BP Group Email Subscription plugin and if the
+			 * "Allow group admins / mods to change members' email subscription settings"
+			 * was enabled.
+			 *
+			 * As of 0.2, we're deprecating this option in favor for the "Manage >
+			 * Details" page.  But, this filter can bring this option back if needed.
+			 *
+			 * This might be removed later down the road.
+			 *
+			 * @since 0.2
+			 *
+			 * @param bool $show Defaults to false.
+			 */
+			$show = apply_filters( 'bp_rbe_new_topic_show_option_on_notifications_page', false );
+
+			if ( true === $show ) {
+				BP_RBE_New_Topic\Group\ManageNotifications::init();
+			}
 		}
 	} );
 
