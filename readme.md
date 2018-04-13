@@ -6,9 +6,9 @@ This plugin was developed for the [CUNY Academic Commons](http://commons.gc.cuny
 
 #### What does this plugin do?
 
-RBE has built-in support to allow members of a BuddyPress group to create new bbPress forum topics via email.  However, the new topic email address is comprised of a hexadecimal hash, which is (intentionally) hard to remember. For example, `foobar+d41d8cd98f00b204e9800998ecf8427e-new@gmail.com` (if you're using IMAP mode in RBE) or `d41d8cd98f00b204e9800998ecf8427e@reply.example.com` (if you're using Inbound mode in RBE).
+RBE has built-in support to allow members of a BuddyPress group to create new bbPress forum topics via email.  However, the new topic email address is comprised of a hexadecimal hash, which is (intentionally) hard to remember. For example, `foobar+d41d8cd98f00b204e9800998ecf8427e-new@gmail.com` (if you're using IMAP mode in RBE) or `d41d8cd98f00b204e9800998ecf8427e-new@reply.example.com` (if you're using Inbound mode in RBE).
 
-This plugin changes the group's new topic email address to use the following format - `group-test-group@reply.example.com` - where `test-group` is the group slug.  Group administrators can further customize the `test-group` portion of the email address on the group's "Manage > Email Options" page.
+This plugin changes the group's new topic email address to use the following format - `group-test-group@reply.example.com` - where `test-group` is the group slug.  Group administrators can further customize the `test-group` portion of the email address on the group's "Manage > Details" page.
 
 Requirements
 -
