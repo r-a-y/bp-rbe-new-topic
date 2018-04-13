@@ -15,7 +15,6 @@ Requirements
 * BP Reply By Email (with [Inbound mode enabled](https://github.com/r-a-y/bp-reply-by-email/wiki/Starter-Guide#1-inbound-email-mode) or with IMAP mode and the [bleeding version of RBE](https://github.com/r-a-y/bp-reply-by-email/archive/master.zip))
 * BuddyPress (with the Groups component activated)
 * bbPress (with [BuddyPress group support enabled](https://codex.buddypress.org/getting-started/installing-group-and-sitewide-forums/#b-set-up-group-and-sitewide-forums))
-* BuddyPress Group Email Subscription
 * PHP 5.3+
 
 How to use?
@@ -33,5 +32,4 @@ How to use?
     - The group's new topic email address should now use the simpler version now - `group-test-group@reply.example.com`.<br />
   ![Screenshot of a group's Forum page](https://cloud.githubusercontent.com/assets/505921/18261097/d00e0748-73a8-11e6-91db-e3ddb02c8bfa.png)
 5. Now, send an email to this email address to test that it is working properly.  (Make sure you are a member of the group before sending the email!)
-6. (optional) To customize the group's new topic email address, navigate to `Manage > Email Options` and alter the email address to your liking.
-![Screenshot of a group's Manage > Email Options page](https://cloud.githubusercontent.com/assets/505921/18261096/cff75412-73a8-11e6-9f31-0672c7595014.png)
+6. (optional) To customize the group's new topic email address, navigate to `Manage > Details` and alter the email address to your liking.
