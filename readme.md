@@ -12,7 +12,7 @@ This plugin changes the group's new topic email address to use the following for
 
 Requirements
 -
-* BP Reply By Email (with [Inbound mode enabled](https://github.com/r-a-y/bp-reply-by-email/wiki/Starter-Guide#1-inbound-email-mode) or with IMAP mode).  Requires v1.0-RC4 or higher.
+* BP Reply By Email (with [Inbound mode enabled](https://github.com/r-a-y/bp-reply-by-email/wiki/Starter-Guide#1-inbound-email-mode) or with IMAP mode).  Requires v1.0-RC6 or higher.
 * BuddyPress (with the Groups component activated)
 * bbPress (with [BuddyPress group support enabled](https://codex.buddypress.org/getting-started/installing-group-and-sitewide-forums/#b-set-up-group-and-sitewide-forums))
 * PHP 5.3+
